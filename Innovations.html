@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Futuristic Tech Innovations Clock</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #140021, #050008 80%);
+    font-family: "Orbitron", sans-serif;
+    overflow: hidden;
+    color: #d8b4ff;
+  }
+
+  .container {
+    position: relative;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 22px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    color: #e879f9;
+    text-shadow: 0 0 20px #c084fc, 0 0 40px #9333ea;
+  }
+
+  canvas {
+    filter: drop-shadow(0 0 30px #9333ea);
+  }
+
+  .innovation {
+    position: absolute;
+    bottom: -90px;
+    width: 100%;
+  }
+
+  .innovation h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #f0abfc;
+    text-shadow: 0 0 10px #c084fc;
+  }
+
+  .innovation p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #ddd6fe;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="title">⚡ FUTURISTIC TECHNOLOGY CLOCK ⚡</div>
+  <canvas id="clock" width="700" height="700"></canvas>
+
+  <div class="innovation">
+    <h2 id="techTitle"></h2>
+    <p id="techDesc"></p>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("clock");
+const ctx = canvas.getContext("2d");
+
+const center = canvas.width / 2;
+
+const techInnovations = [
+  ["Printing Press (1440)", "Gutenberg revolutionized knowledge distribution."],
+  ["Steam Engine (1712)", "Powered the industrial revolution."],
+  ["Telephone (1876)", "Invented by Alexander Graham Bell."],
+  ["Electric Light (1879)", "Edison lit up the world."],
+  ["Airplane (1903)", "Wright brothers took flight."],
+  ["Television (1927)", "The world saw moving images."],
+  ["Computer (1940s)", "Birth of digital computation."],
+  ["Internet (1969)", "ARPANET began a new era."],
+  ["Mobile Phone (1973)", "First call from a cell phone."],
+  ["GPS (1978)", "Global Positioning System launched."],
+  ["World Wide Web (1991)", "Tim Berners-Lee connected us."],
+  ["Smartphones (2007)", "iPhone changed everything."],
+  ["CRISPR (2012)", "Precise genetic editing."],
+  ["AI Boom (2015+)", "Machines started thinking."],
+  ["Quantum Supremacy (2019)", "Quantum computers outperform classical."],
+  ["Reusable Rockets (2020s)", "SpaceX redefines access to space."]
+];
+
+let lastHour = -1;
+let currentInnovation = techInnovations[Math.floor(Math.random()*techInnovations.length)];
+
+function drawClock() {
+  const now = new Date();
+
+  if (now.getHours() !== lastHour) {
+    currentInnovation = techInnovations[Math.floor(Math.random()*techInnovations.length)];
+    lastHour = now.getHours();
+  }
+
+  document.getElementById("techTitle").textContent = currentInnovation[0];
+  document.getElementById("techDesc").textContent = currentInnovation[1];
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.save();
+  ctx.translate(center, center);
+
+  // futuristic purple ring
+  ctx.beginPath();
+  ctx.arc(0,0,250,0,Math.PI*2);
+  ctx.strokeStyle = "#a855f7";
+  ctx.lineWidth = 3;
+  ctx.shadowBlur = 30;
+  ctx.shadowColor = "#9333ea";
+  ctx.stroke();
+
+  // ticks
+  for (let i=0;i<60;i++){
+    const angle = (Math.PI/30)*i;
+    const r1 = 240;
+    const r2 = i%5===0 ? 225 : 232;
+
+    ctx.beginPath();
+    ctx.moveTo(r1*Math.cos(angle), r1*Math.sin(angle));
+    ctx.lineTo(r2*Math.cos(angle), r2*Math.sin(angle));
+    ctx.strokeStyle = i%5===0 ? "#c084fc" : "#4c1d95";
+    ctx.lineWidth = i%5===0 ? 2 : 1;
+    ctx.stroke();
+  }
+
+  const hour = now.getHours()%12 + now.getMinutes()/60;
+  const minute = now.getMinutes() + now.getSeconds()/60;
+  const second = now.getSeconds();
+
+  // hour hand
+  let angle = (Math.PI/6)*hour - Math.PI/2;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(120*Math.cos(angle),120*Math.sin(angle));
+  ctx.strokeStyle = "#c084fc";
+  ctx.lineWidth = 8;
+  ctx.shadowColor = "#c084fc";
+  ctx.shadowBlur = 25;
+  ctx.stroke();
+
+  // minute
+  angle = (Math.PI/30)*minute - Math.PI/2;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(180*Math.cos(angle),180*Math.sin(angle));
+  ctx.strokeStyle = "#ddd6fe";
+  ctx.lineWidth = 5;
+  ctx.shadowColor = "#ddd6fe";
+  ctx.shadowBlur = 20;
+  ctx.stroke();
+
+  // second
+  angle = (Math.PI/30)*second - Math.PI/2;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(210*Math.cos(angle),210*Math.sin(angle));
+  ctx.strokeStyle = "#f472b6";
+  ctx.lineWidth = 2;
+  ctx.shadowColor = "#f472b6";
+  ctx.shadowBlur = 20;
+  ctx.stroke();
+
+  // center
+  ctx.beginPath();
+  ctx.arc(0,0,8,0,Math.PI*2);
+  ctx.fillStyle = "#faf5ff";
+  ctx.fill();
+
+  ctx.restore();
+}
+
+setInterval(drawClock,1000);
+drawClock();
+</script>
+
+</body>
+</html>
